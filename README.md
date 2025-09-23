@@ -1,30 +1,30 @@
-## NMH Localized GeoGuesser (Streamlit)
+Roles:
+Backend: Shun & Eben
+Frontend: Henry & Ethan
+Chief Photographer and Location Services: Georgii Panasenko
 
-### Setup
-1. Requires Python 3.9+.
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. Run the app:
-   ```bash
-   streamlit run src/main.py
-   ```
+file structure:
+- \src
+- \ - \backend.py
+- \ - \gui.py
+- \ - \main.py
+- \ data
+- \ - \imagedata.json
+- \ - \userdata.json
+- \ - \ photos
+- \ - \ - \ photo0.jpg
 
-### How it works (local 2D coordinates)
-- Place your campus map image at `assets/nmh_map.png`.
-- In Admin tab: upload a photo, set its answer point as pixel coordinates (x, y). Optional: spot name, direction, hint.
-- In Play tab: choose "Canvas guess" to click on the campus map and see pixel distance to the answer. Or use "Multiple choice (images)".
-
-### Data
-- Images saved under `data/images/`
-- Metadata in `data/metadata.json`
-
-### Notes
-- This app is intended for local use. Respect image copyrights.
-
+User will be able to:
+   click a point on the map and get returned a score
+   see a map
+   see a photo
+   see a timer
+   show the next image after an image is clicked or the timer runs out
+   see their score
+   see number of images left
+   When the file is run they will choose easy or hard
 ### Project Structure
-```
+
 NMH_GeoGuesser/
   assets/
     nmh_map.png            # Campus base image (you provide)
@@ -40,5 +40,10 @@ NMH_GeoGuesser/
   .gitignore
   README.md
   requirements.txt
-```
-
+backend requirements:
+   image location on map
+   high score
+   use each image only once and randomize(queue all images at start)
+   timer
+   find point of click on map
+   calculate points for each distance
