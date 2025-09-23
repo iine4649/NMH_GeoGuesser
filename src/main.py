@@ -47,12 +47,16 @@ def pixel_distance(p1: Tuple[float, float], p2: Tuple[float, float]) -> float:
 class LocationItem:
     id: str
     image_path: str
-    # ローカル2D座標（キャンパス画像ピクセル座標）
-    x: float
-    y: float
+    # Local 2D coordinates (integer pixel grid)
+    x: int
+    y: int
     hint: Optional[str] = None
     spot: Optional[str] = None
     direction: Optional[str] = None
+
+
+def _clamp_int(value: int, min_value: int, max_value: int) -> int:
+    return max(min_value, min(max_value, value))
 
 
 def add_location_item(img_bytes: bytes, img_suffix: str, x: float, y: float, hint: Optional[str]) -> None:
@@ -65,7 +69,9 @@ def add_location_item(img_bytes: bytes, img_suffix: str, x: float, y: float, hin
         f.write(img_bytes)
 
     meta = load_metadata()
-    entry = LocationItem(id=item_id, image_path=file_path, x=x, y=y, hint=hint)
+    xi = int(round(x))
+    yi = int(round(y))
+    entry = LocationItem(id=item_id, image_path=file_path, x=xi, y=yi, hint=hint)
     meta["items"].append(asdict(entry))
     save_metadata(meta)
 
@@ -95,16 +101,16 @@ def page_admin_local(canvas_meta: dict) -> None:
     uploaded = st.file_uploader("Select image (PNG/JPG)", type=["png", "jpg", "jpeg"])
     col1, col2 = st.columns(2)
     with col1:
-        x = st.number_input("X (px)", value=canvas_meta["width"] / 2.0, step=1.0, format="%.0f")
+        x = st.number_input("X (px)", value=float(canvas_meta["width"] // 2), step=1.0, format="%.0f")
     with col2:
-        y = st.number_input("Y (px)", value=canvas_meta["height"] / 2.0, step=1.0, format="%.0f")
+        y = st.number_input("Y (px)", value=float(canvas_meta["height"] // 2), step=1.0, format="%.0f")
     hint = st.text_input("Hint (optional)")
     spot = st.text_input("Spot name (optional, e.g., Library, Gym)")
     direction = st.selectbox("Direction (optional)", ["", "N", "NE", "E", "SE", "S", "SW", "W", "NW"], index=0)
 
     if uploaded is not None:
         image = Image.open(uploaded)
-        st.image(image, caption="プレビュー", use_column_width=True)
+        st.image(image, caption="Preview", use_column_width=True)
 
     if st.button("Save"):
         if uploaded is None:
@@ -114,8 +120,10 @@ def page_admin_local(canvas_meta: dict) -> None:
         if suffix not in [".png", ".jpg", ".jpeg"]:
             st.warning("Only PNG/JPG are supported.")
             return
-        add_location_item(uploaded.getvalue(), suffix, float(x), float(y), hint if hint else None)
-        # 追加メタを保存
+        xi = _clamp_int(int(round(float(x))), 0, int(canvas_meta["width"]) - 1)
+        yi = _clamp_int(int(round(float(y))), 0, int(canvas_meta["height"]) - 1)
+        add_location_item(uploaded.getvalue(), suffix, xi, yi, hint if hint else None)
+        # Save additional metadata
         meta = load_metadata()
         last_id = meta["items"][-1]["id"] if meta.get("items") else None
         if last_id is not None:
@@ -135,7 +143,7 @@ def page_admin_local(canvas_meta: dict) -> None:
     st.write(f"Total: {len(items)}")
 
 
-def canvas_click_get_point(bg_image_path: str, display_width: int) -> Optional[Tuple[float, float]]:
+def canvas_click_get_point(bg_image_path: str, display_width: int) -> Optional[Tuple[int, int]]:
     if not os.path.exists(bg_image_path):
         st.warning("Campus image not found: assets/nmh_map.png")
         return None
@@ -161,8 +169,12 @@ def canvas_click_get_point(bg_image_path: str, display_width: int) -> Optional[T
         last_obj = c.json_data["objects"][-1]
         x = float(last_obj.get("left", 0))
         y = float(last_obj.get("top", 0))
-        # Convert display coords back to original image coords
-        return (x / ratio, y / ratio)
+        # Convert display coords back to original image coords and snap to integer pixel grid
+        xi = int(round(x / ratio))
+        yi = int(round(y / ratio))
+        xi = _clamp_int(xi, 0, orig_width - 1)
+        yi = _clamp_int(yi, 0, orig_height - 1)
+        return (xi, yi)
     return None
 
 
@@ -177,11 +189,11 @@ def page_play_local(canvas_meta: dict) -> None:
 
     import random
 
-    if mode == "キャンバス推測":
+    if mode == "Canvas guess":
         if "current_item_id" not in st.session_state:
             st.session_state.current_item_id = None
 
-        if st.button("ランダムに出題") or st.session_state.current_item_id is None:
+        if st.button("Random question") or st.session_state.current_item_id is None:
             st.session_state.current_item_id = random.choice(items)["id"]
 
         current = next((i for i in items if i["id"] == st.session_state.current_item_id), None)
@@ -196,14 +208,9 @@ def page_play_local(canvas_meta: dict) -> None:
 
         if guessed:
             gx, gy = guessed
-            tx, ty = float(current["x"]), float(current["y"])
+            tx, ty = int(current["x"]), int(current["y"])
             dist = pixel_distance((gx, gy), (tx, ty))
-            st.success(f"Pixel distance: {dist:.1f} px")
-
-            # 正解点の可視化
-            st.write("Answer location (red point) reference:")
-            canvas_click_get_point  # no-op to keep key reuse out; visualization is limited
-            st.write(f"Answer: x={tx:.0f}, y={ty:.0f}")
+            st.success(f"Pixel distance: {dist:.0f} px (guess: {gx},{gy} / answer: {tx},{ty})")
 
     else:
         if len(items) < 4:

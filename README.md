@@ -23,3 +23,22 @@
 ### Notes
 - This app is intended for local use. Respect image copyrights.
 
+### Project Structure
+```
+NMH_GeoGuesser/
+  assets/
+    nmh_map.png            # Campus base image (you provide)
+  data/
+    images/                # Uploaded photos (saved at runtime)
+    metadata.json          # Item metadata (created at runtime)
+  src/
+    main.py                # Streamlit app entry
+  tests/
+    README.md              # Test notes
+  .streamlit/
+    config.toml            # Streamlit dev config
+  .gitignore
+  README.md
+  requirements.txt
+```
+
