@@ -4,13 +4,16 @@ class image:
         pass
     def imageadd():
         images = loadjson()
-        imagename = input("Where is the image taken")
+        imagename = input("What is the picture of? ")
         imagelocationx = int(input("X coordinate"))
         imagelocationy = int(input("Y coordinate"))
+        imagedifficulty = input("Easy or Hard difficulty (case sensitive)? ")
         new_image = {
             "imagename" : imagename,
             "imagelocationx" : imagelocationx,
-            "imageocationy" : imagelocationy
+            "imageocationy" : imagelocationy,
+            "imagedifficulty" : imagedifficulty
         }
         images.append(new_image)
         savejson("imagedata.json", images)
+    
