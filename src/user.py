@@ -1,3 +1,12 @@
+"""Simple User model and serialization helpers.
+
+This module provides a minimal `User` class used to hold a player's name
+and a high score. It includes `to_dict`/`from_dict` helpers to serialize to
+and from plain dictionaries suitable for JSON storage under `data/`.
+
+"""
+
+
 class User:
     def __init__(self, name: str, high_score: int):
         self.name = name

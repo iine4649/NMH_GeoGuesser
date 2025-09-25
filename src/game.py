@@ -19,7 +19,7 @@ def get_processed_image_path(image_data):
 
 
 def save_final_score(score, difficulty):
-)
+    return None
 
 
 def get_rankings(difficulty):

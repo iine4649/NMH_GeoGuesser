@@ -1,3 +1,31 @@
+"""GUI for gui.py
+
+This module contains the Qt-based user interface used by the NMH GeoGuesser
+application.
+
+Summary
+- MainWindow: the main application window. Responsible for difficulty
+    selection, showing the current photo, the clickable map widget, the timer
+    and score display, and end-of-game summary.
+- PhotoLabel: QLabel subclass that scales QPixmap while preserving aspect
+    ratio and quality.
+
+Data expectations
+- The game relies on `initialize_game_state` and `get_processed_image_path`
+    from `src/game.py`. Each image entry passed to the UI is expected to be a dict with at least these keys:
+        - "imlocationx": int (x coordinate on the map)
+        - "imlocationy": int (y coordinate on the map)
+        - a filename/path that `get_processed_image_path` can turn into a local
+            filesystem path usable by QPixmap.
+
+Running
+- Use the project entrypoint `src/main.py` to start the application. From
+    the project root (using the project's venv):
+
+        /path/to/project/.venv/bin/python src/main.py
+
+"""
+
 from PySide6.QtWidgets import (
     QMainWindow,
     QWidget,
@@ -85,18 +113,33 @@ class MainWindow(QMainWindow):
         layout = QVBoxLayout(widget)
         self.setCentralWidget(widget)
 
-        layout.addWidget(QLabel("NMH GeoGuesser"))
-        layout.addWidget(QLabel("Select Difficulty:"))
+        title_label = QLabel("NMH GeoGuesser")
+        title_label.setAlignment(Qt.AlignCenter| Qt.AlignVCenter)
+        layout.addWidget(title_label)
 
-        # Create Easy button
+        subtitle_label = QLabel("Select Difficulty:")
+        subtitle_label.setAlignment(Qt.AlignCenter | Qt.AlignTop)
+        layout.addWidget(subtitle_label)
+
+        # Put Easy and Hard buttons side-by-side near the top
+        btn_row = QWidget()
+        btn_layout = QHBoxLayout(btn_row)
+        btn_layout.setSpacing(20)
+        btn_layout.setContentsMargins(0, 10, 0, 10)
+
         easy_button = QPushButton("Easy")
+        easy_button.setFixedWidth(120)
         easy_button.clicked.connect(self.start_easy_game)
-        layout.addWidget(easy_button)
-
-        # Create Hard button
+        btn_layout.addWidget(easy_button)
+        
         hard_button = QPushButton("Hard")
+        hard_button.setFixedWidth(120)
         hard_button.clicked.connect(self.start_hard_game)
-        layout.addWidget(hard_button)
+        btn_layout.addWidget(hard_button)
+
+        # center the button row
+        btn_layout.setAlignment(Qt.AlignHCenter)
+        layout.addWidget(btn_row)
 
     def start_easy_game(self):
         self.start_game("easy")
@@ -127,10 +170,10 @@ class MainWindow(QMainWindow):
         self.image_counter_label = QLabel()
 
         # Add labels to layout
-        self.timer_label.setAlignment(Qt.AlignCenter)
+        self.timer_label.setAlignment(Qt.AlignCenter | Qt.AlignVCenter)
         middle_layout.addWidget(self.timer_label)
 
-        self.score_label.setAlignment(Qt.AlignCenter)
+        self.score_label.setAlignment(Qt.AlignCenter | Qt.AlignVCenter)
         middle_layout.addWidget(self.score_label)
 
         self.image_counter_label.setAlignment(Qt.AlignCenter)
