@@ -20,7 +20,7 @@ NMH_MAP_PATH = os.path.join("assets", "nmh_map.png")
 
 
 
-
+#TODO make the main window a qt window and put the ui in the main window Henry
 
 def main() -> None:
     return None
