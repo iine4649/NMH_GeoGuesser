@@ -34,5 +34,3 @@ def is_within_bbox(lat: float, lon: float, bbox: Tuple[float, float, float, floa
 def pixel_distance(p1: Tuple[float, float], p2: Tuple[float, float]) -> float:
     from math import sqrt
     return float(sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2))
-
-
