@@ -28,5 +28,20 @@
     "player": "Player",
     "score": 1118,
     "difficulty": "hard"
+  },
+  {
+    "player": "Player",
+    "score": 27019,
+    "difficulty": "easy"
+  },
+  {
+    "player": "Player",
+    "score": 28800,
+    "difficulty": "hard"
+  },
+  {
+    "player": "Player",
+    "score": 10651,
+    "difficulty": "hard"
   }
 ]
