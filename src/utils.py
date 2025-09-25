@@ -66,6 +66,7 @@ def pixel_distance(p1: Tuple[float, float], p2: Tuple[float, float]) -> float:
     from math import sqrt
     return float(sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2))
 
+
 def save_user_data(data: dict) -> None:
     with open(USER_DATA_PATH, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)

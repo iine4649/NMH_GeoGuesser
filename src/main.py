@@ -1,17 +1,7 @@
-"""Main.py
+import streamlit as st
+from PIL import Image
+from streamlit_drawable_canvas import st_canvas
 
-This module creates the Qt application and shows the main window.
-
-Run instructions:
-  Use the project's virtual environment to run this file so PySide6 is
-  loaded from the project venv. 
-  
-"""
-
-import sys
-from PySide6.QtWidgets import QApplication
-
-from gui import MainWindow
 
 
 def main() -> None:
@@ -21,7 +11,8 @@ def main() -> None:
     sys.exit(app.exec())
 
 
-if __name__ == "__main__":
-    main()
-
+DATA_DIR = os.path.join("data")
+IMAGES_DIR = os.path.join(DATA_DIR, "images")
+METADATA_PATH = os.path.join(DATA_DIR, "metadata.json")
+NMH_MAP_PATH = os.path.join("assets", "nmh_map.png")
 

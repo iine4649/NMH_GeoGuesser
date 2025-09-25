@@ -1,3 +1,35 @@
+
+import json
+from gui import MainWindow
+
+#uses the env variable to sort images by difficulty
+def load_images_by_difficulty(difficulty):
+    images = loadjson()
+    if MainWindow.isrunning == 1:
+        key_to_find = "difficulty"
+        value_to_match = "easy"
+        filtered_images = [
+            d for d in images
+            if key_to_find in d and d[key_to_find] == value_to_match
+        ]
+    elif MainWindow.isrunning == 2:
+        key_to_find = "difficulty"
+        value_to_match = "hard"
+        filtered_images = [
+            d for d in images
+            if key_to_find in d and d[key_to_find] == value_to_match
+        ]
+    return filtered_images
+
+def process_image_path(image_path):
+    
+    return image_path
+
+
+def initialize_game_state(difficulty):
+    game_state = MainWindow.isrunning
+    return game_state
+=======
 from typing import List, Dict
 import os
 import random
@@ -17,6 +49,7 @@ _player_name = ""
 def update_total_score(score: int) -> None:
     global _session_total_score
     _session_total_score = _session_total_score + int(score)
+
 
 
 def save_final_score(total_score: int, difficulty: str) -> None:
@@ -67,7 +100,6 @@ def initialize_game_state(difficulty: str) -> Dict:
         "current_difficulty": difficulty,
         "current_image_data": current_image_data,
     }
-
 
 
 def get_processed_image_path(image_data: Dict) -> str:

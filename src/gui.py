@@ -47,6 +47,7 @@ from game import save_final_score,get_rankings,initialize_game_state,get_process
 class PhotoLabel(QLabel):
     def __init__(self, text=""):
         super().__init__(text)
+        self.isrunning = 0
 
     def setPixmap(self, pixmap):
         if pixmap and not pixmap.isNull():
@@ -74,6 +75,8 @@ class MainWindow(QMainWindow):
         self.current_difficulty = None
         self.setup_menu_bar()
         self.show_difficulty_selection()
+        #lets the difficulty loading function know what the difficulty is
+        self.isrunning = 0
 
     def setup_menu_bar(self):
         view_menu = self.menuBar().addMenu("View")
@@ -139,9 +142,11 @@ class MainWindow(QMainWindow):
 
     def start_easy_game(self):
         self.start_game("easy")
+        self.isrunning = 1
 
     def start_hard_game(self):
         self.start_game("hard")
+        self.isrunning = 2
 
     def start_game(self, difficulty):
         print(f"Starting game with difficulty: {difficulty}")
