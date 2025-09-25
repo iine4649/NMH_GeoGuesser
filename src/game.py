@@ -39,6 +39,7 @@ def get_rankings(difficulty: str) -> List[Dict]:
         return []
 
 
+
 def initialize_game_state(difficulty: str) -> Dict:
     ensure_data_dirs_exist()
     # imagedata.json is an array. Filter by difficulty
@@ -66,6 +67,7 @@ def initialize_game_state(difficulty: str) -> Dict:
         "current_difficulty": difficulty,
         "current_image_data": current_image_data,
     }
+
 
 
 def get_processed_image_path(image_data: Dict) -> str:
