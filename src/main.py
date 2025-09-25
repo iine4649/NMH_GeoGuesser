@@ -10,10 +10,11 @@ Run instructions:
 
 import sys
 from PySide6.QtWidgets import QApplication
+
 from gui import MainWindow
 
 
-def main():
+def main() -> None:
     app = QApplication(sys.argv)
     window = MainWindow()
     window.show()
