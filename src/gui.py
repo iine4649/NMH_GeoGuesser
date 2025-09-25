@@ -12,12 +12,8 @@ from PySide6.QtGui import QAction, QKeySequence, QPixmap
 
 from clickable_map import ClickableMap
 from score import get_scores
-from game import (
-    save_final_score,
-    get_rankings,
-    initialize_game_state,
-    get_processed_image_path,
-)
+from game import save_final_score,get_rankings,initialize_game_state,get_processed_image_path
+
 
 
 class PhotoLabel(QLabel):
