@@ -49,17 +49,40 @@ from game import (
 
 
 class PhotoLabel(QLabel):
+    """
+    Custom QLabel that automatically scales images while maintaining aspect ratio.
+    Handles image resizing when the widget is resized.
+    """
     def __init__(self, text=""):
         super().__init__(text)
+        self.original_pixmap = None
+        self.setMinimumSize(200, 150)  # Set minimum size to prevent too small images
 
     def setPixmap(self, pixmap):
+        """Store original pixmap and display scaled version"""
         if pixmap and not pixmap.isNull():
-            scaled_pixmap = pixmap.scaled(
-                self.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation
-            )
-            super().setPixmap(scaled_pixmap)
+            self.original_pixmap = pixmap
+            self._update_scaled_pixmap()
         else:
+            self.original_pixmap = None
             super().setPixmap(pixmap)
+
+    def _update_scaled_pixmap(self):
+        """Update the displayed pixmap with proper scaling"""
+        if self.original_pixmap and not self.original_pixmap.isNull():
+            # Get current widget size
+            widget_size = self.size()
+            if widget_size.width() > 0 and widget_size.height() > 0:
+                scaled_pixmap = self.original_pixmap.scaled(
+                    widget_size, Qt.KeepAspectRatio, Qt.SmoothTransformation
+                )
+                super().setPixmap(scaled_pixmap)
+
+    def resizeEvent(self, event):
+        """Handle widget resize by updating the scaled pixmap"""
+        super().resizeEvent(event)
+        if self.original_pixmap:
+            self._update_scaled_pixmap()
 
 
 class MainWindow(QMainWindow):
@@ -317,9 +340,8 @@ class MainWindow(QMainWindow):
             rankings = get_rankings(self.current_difficulty)
 
             if rankings:
-                max_rankings = 5
-                if len(rankings) < max_rankings:
-                    max_rankings = len(rankings)
+                # Show top 5 scores
+                max_rankings = min(5, len(rankings))
 
                 for i in range(max_rankings):
                     entry = rankings[i]
@@ -337,3 +359,9 @@ class MainWindow(QMainWindow):
                 no_rankings_label.setAlignment(Qt.AlignCenter)
                 no_rankings_label.setStyleSheet("margin: 10px; font-style: italic;")
                 layout.addWidget(no_rankings_label)
+                
+                
+        # Add button to return to main menu
+        restart_button = QPushButton("Play Again")
+        restart_button.clicked.connect(self.show_difficulty_selection)
+        layout.addWidget(restart_button)
