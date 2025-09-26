@@ -43,5 +43,15 @@
     "player": "Player",
     "score": 10651,
     "difficulty": "hard"
+  },
+  {
+    "player": "Player",
+    "score": 10075,
+    "difficulty": "easy"
+  },
+  {
+    "player": "Player",
+    "score": 8857,
+    "difficulty": "easy"
   }
 ]
