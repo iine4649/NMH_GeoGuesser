@@ -52,7 +52,7 @@ def initialize_game_state(difficulty: str) -> Dict:
         filtered = items[:]  # Fallback to all items if none match difficulty
 
     random.shuffle(filtered)
-    filtered = filtered[:10]
+    filtered = filtered[:5]
 
     current_index = 0
     current_image_data = filtered[current_index] if filtered else None

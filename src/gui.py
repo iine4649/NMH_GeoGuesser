@@ -87,7 +87,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("NMH GeoGuesser")
         self.timer = QTimer()
         self.timer.timeout.connect(self.update_timer)
-        self.timer_duration = 30
+        self.timer_duration = 20
         self.time_remaining = self.timer_duration
         self.guess_made = False
         self.current_score = 0
